@@ -1,39 +1,39 @@
--- ×ÛºÏ½ğÈÚ°¸Àı£º¹ÉÆ±·ÖÎöÏµÍ³
--- Ò»¡¢´´½¨Êı¾İ¿â±í½á¹¹
--- 1. »ù´¡±í£º¹ÉÆ±´úÂë±í
--- ¹ÉÆ±´úÂë±í
+-- ç»¼åˆé‡‘èæ¡ˆä¾‹ï¼šè‚¡ç¥¨åˆ†æç³»ç»Ÿ
+-- ä¸€ã€åˆ›å»ºæ•°æ®åº“è¡¨ç»“æ„
+-- 1. åŸºç¡€è¡¨ï¼šè‚¡ç¥¨ä»£ç è¡¨
+-- è‚¡ç¥¨ä»£ç è¡¨
 CREATE TABLE stk_code (
-    scode      VARCHAR2(6) PRIMARY KEY,      -- ¹ÉÆ±´úÂë
-    sname      VARCHAR2(50) NOT NULL,        -- ¹ÉÆ±Ãû³Æ
-    market     VARCHAR2(10) DEFAULT 'SZ',     -- ÊĞ³¡£ºSZ-ÉîÊĞ, SH-»¦ÊĞ, BJ-±±½»
-    industry   VARCHAR2(50),                 -- ĞĞÒµ·ÖÀà
-    list_date  DATE,                         -- ÉÏÊĞÈÕÆÚ
-    delist_date DATE,                        -- ÍËÊĞÈÕÆÚ
-    status     VARCHAR2(1) DEFAULT '1'       -- ×´Ì¬£º1-Õı³£, 0-Í£ÅÆ, 9-ÍËÊĞ
+    scode      VARCHAR2(6) PRIMARY KEY,      -- è‚¡ç¥¨ä»£ç 
+    sname      VARCHAR2(50) NOT NULL,        -- è‚¡ç¥¨åç§°
+    market     VARCHAR2(10) DEFAULT 'SZ',     -- å¸‚åœºï¼šSZ-æ·±å¸‚, SH-æ²ªå¸‚, BJ-åŒ—äº¤
+    industry   VARCHAR2(50),                 -- è¡Œä¸šåˆ†ç±»
+    list_date  DATE,                         -- ä¸Šå¸‚æ—¥æœŸ
+    delist_date DATE,                        -- é€€å¸‚æ—¥æœŸ
+    status     VARCHAR2(1) DEFAULT '1'       -- çŠ¶æ€ï¼š1-æ­£å¸¸, 0-åœç‰Œ, 9-é€€å¸‚
 );
 
--- ´´½¨Ë÷Òı
+-- åˆ›å»ºç´¢å¼•
 CREATE INDEX idx_stk_market ON stk_code(market);
 CREATE INDEX idx_stk_industry ON stk_code(industry);
 CREATE BITMAP INDEX idx_stk_status ON stk_code(status);
 
 select * from stk_code;
 
--- 2. ºËĞÄ±í£ºĞĞÇéÊı¾İ±í
--- ÈÕĞĞÇé±í£¨·ÖÇø±íÌá¸ß²éÑ¯ĞÔÄÜ£©
+-- 2. æ ¸å¿ƒè¡¨ï¼šè¡Œæƒ…æ•°æ®è¡¨
+-- æ—¥è¡Œæƒ…è¡¨ï¼ˆåˆ†åŒºè¡¨æé«˜æŸ¥è¯¢æ€§èƒ½ï¼‰
 CREATE TABLE stk_daily (
-    scode      VARCHAR2(6),                   -- ¹ÉÆ±´úÂë
-    trade_date DATE,                          -- ½»Ò×ÈÕÆÚ
-    open_price NUMBER(10,2),                  -- ¿ªÅÌ¼Û
-    close_price NUMBER(10,2),                 -- ÊÕÅÌ¼Û
-    high_price  NUMBER(10,2),                 -- ×î¸ß¼Û
-    low_price   NUMBER(10,2),                 -- ×îµÍ¼Û
-    volume      NUMBER(15),                   -- ³É½»Á¿(ÊÖ)
-    amount      NUMBER(20,2),                 -- ³É½»¶î(ÍòÔª)
-    pct_change  NUMBER(6,2),                  -- ÕÇµø·ù%
-    pe_ratio    NUMBER(8,2),                 -- ÊĞÓ¯ÂÊ
-    pb_ratio    NUMBER(6,2),                 -- ÊĞ¾»ÂÊ
-    turnover_rate NUMBER(6,2),               -- »»ÊÖÂÊ%
+    scode      VARCHAR2(6),                   -- è‚¡ç¥¨ä»£ç 
+    trade_date DATE,                          -- äº¤æ˜“æ—¥æœŸ
+    open_price NUMBER(10,2),                  -- å¼€ç›˜ä»·
+    close_price NUMBER(10,2),                 -- æ”¶ç›˜ä»·
+    high_price  NUMBER(10,2),                 -- æœ€é«˜ä»·
+    low_price   NUMBER(10,2),                 -- æœ€ä½ä»·
+    volume      NUMBER(15),                   -- æˆäº¤é‡(æ‰‹)
+    amount      NUMBER(20,2),                 -- æˆäº¤é¢(ä¸‡å…ƒ)
+    pct_change  NUMBER(6,2),                  -- æ¶¨è·Œå¹…%
+    pe_ratio    NUMBER(8,2),                 -- å¸‚ç›ˆç‡
+    pb_ratio    NUMBER(6,2),                 -- å¸‚å‡€ç‡
+    turnover_rate NUMBER(6,2),               -- æ¢æ‰‹ç‡%
     CONSTRAINT pk_stk_daily PRIMARY KEY (scode, trade_date)
 )
 PARTITION BY RANGE (trade_date) (
@@ -42,10 +42,10 @@ PARTITION BY RANGE (trade_date) (
     PARTITION p_2022 VALUES LESS THAN (DATE '2023-01-01'),
     PARTITION p_2023 VALUES LESS THAN (DATE '2024-01-01'),
     PARTITION p_2024 VALUES LESS THAN (DATE '2025-01-01'),
-    PARTITION p_future VALUES LESS THAN (MAXVALUE) -- ·ÖÇøº¯Êı
+    PARTITION p_future VALUES LESS THAN (MAXVALUE) -- åˆ†åŒºå‡½æ•°
 );
 
--- ´´½¨Ë÷Òı
+-- åˆ›å»ºç´¢å¼•
 CREATE INDEX idx_daily_date ON stk_daily(trade_date);
 CREATE INDEX idx_daily_pct ON stk_daily(pct_change);
 CREATE INDEX idx_daily_volume ON stk_daily(volume);
@@ -53,19 +53,19 @@ CREATE INDEX idx_daily_volume ON stk_daily(volume);
 
 select * from stk_daily;
 
--- ²ÆÎñÖ¸±ê±í
+-- è´¢åŠ¡æŒ‡æ ‡è¡¨
 CREATE TABLE stk_finance (
-    scode       VARCHAR2(6),                  -- ¹ÉÆ±´úÂë
-    report_date DATE,                         -- ±¨¸æÆÚ
-    report_type VARCHAR2(2),                  -- ±¨¸æÀàĞÍ£ºQ1-Ò»¼¾±¨, HY-°ëÄê±¨, Q3-Èı¼¾±¨, A-Äê±¨
-    revenue     NUMBER(20,2),                 -- ÓªÒµÊÕÈë(ÒÚÔª)
-    net_profit  NUMBER(20,2),                 -- ¾»ÀûÈó(ÒÚÔª)
-    roe         NUMBER(6,2),                  -- ¾»×Ê²úÊÕÒæÂÊ%
-    gross_margin NUMBER(6,2),                 -- Ã«ÀûÂÊ%
-    debt_ratio  NUMBER(6,2),                 -- ×Ê²ú¸ºÕ®ÂÊ%
-    eps         NUMBER(6,2),                  -- Ã¿¹ÉÊÕÒæ
-    bvps        NUMBER(8,2),                  -- Ã¿¹É¾»×Ê²ú
-    total_assets NUMBER(20,2),               -- ×Ü×Ê²ú(ÒÚÔª)
+    scode       VARCHAR2(6),                  -- è‚¡ç¥¨ä»£ç 
+    report_date DATE,                         -- æŠ¥å‘ŠæœŸ
+    report_type VARCHAR2(2),                  -- æŠ¥å‘Šç±»å‹ï¼šQ1-ä¸€å­£æŠ¥, HY-åŠå¹´æŠ¥, Q3-ä¸‰å­£æŠ¥, A-å¹´æŠ¥
+    revenue     NUMBER(20,2),                 -- è¥ä¸šæ”¶å…¥(äº¿å…ƒ)
+    net_profit  NUMBER(20,2),                 -- å‡€åˆ©æ¶¦(äº¿å…ƒ)
+    roe         NUMBER(6,2),                  -- å‡€èµ„äº§æ”¶ç›Šç‡%
+    gross_margin NUMBER(6,2),                 -- æ¯›åˆ©ç‡%
+    debt_ratio  NUMBER(6,2),                 -- èµ„äº§è´Ÿå€ºç‡%
+    eps         NUMBER(6,2),                  -- æ¯è‚¡æ”¶ç›Š
+    bvps        NUMBER(8,2),                  -- æ¯è‚¡å‡€èµ„äº§
+    total_assets NUMBER(20,2),               -- æ€»èµ„äº§(äº¿å…ƒ)
     CONSTRAINT pk_stk_finance PRIMARY KEY (scode, report_date, report_type)
 );
 
@@ -74,28 +74,28 @@ CREATE INDEX idx_finance_roe ON stk_finance(roe);
 
 select * from stk_finance;
 
--- ×Ê½ğÁ÷Ïò±í
+-- èµ„é‡‘æµå‘è¡¨
 CREATE TABLE stk_capital (
     scode      VARCHAR2(6),
     trade_date DATE,
-    main_inflow   NUMBER(15,2),              -- Ö÷Á¦¾»Á÷Èë(ÍòÔª)
-    retail_inflow NUMBER(15,2),               -- É¢»§¾»Á÷Èë(ÍòÔª)
-    north_inflow  NUMBER(15,2),               -- ±±Ïò×Ê½ğ¾»Á÷Èë(ÍòÔª)
-    buy_volume    NUMBER(15),                 -- ´óµ¥ÂòÈëÁ¿(ÊÖ)
-    sell_volume   NUMBER(15),                 -- ´óµ¥Âô³öÁ¿(ÊÖ)
+    main_inflow   NUMBER(15,2),              -- ä¸»åŠ›å‡€æµå…¥(ä¸‡å…ƒ)
+    retail_inflow NUMBER(15,2),               -- æ•£æˆ·å‡€æµå…¥(ä¸‡å…ƒ)
+    north_inflow  NUMBER(15,2),               -- åŒ—å‘èµ„é‡‘å‡€æµå…¥(ä¸‡å…ƒ)
+    buy_volume    NUMBER(15),                 -- å¤§å•ä¹°å…¥é‡(æ‰‹)
+    sell_volume   NUMBER(15),                 -- å¤§å•å–å‡ºé‡(æ‰‹)
     CONSTRAINT pk_stk_capital PRIMARY KEY (scode, trade_date)
 );
 
 
--- ¶ş¡¢²åÈëÊ¾ÀıÊı¾İ
--- 1. ²åÈë¹ÉÆ±´úÂëÊı¾İ
-INSERT INTO stk_code VALUES ('000001', 'Æ½°²ÒøĞĞ', 'SZ', 'ÒøĞĞ', DATE '1991-04-03', NULL, '1');
-INSERT INTO stk_code VALUES ('000002', 'Íò¿ÆA', 'SZ', '·¿µØ²ú', DATE '1991-01-29', NULL, '1');
-INSERT INTO stk_code VALUES ('600519', '¹óÖİÃ©Ì¨', 'SH', 'Ê³Æ·ÒûÁÏ', DATE '2001-08-27', NULL, '1');
-INSERT INTO stk_code VALUES ('601318', 'ÖĞ¹úÆ½°²', 'SH', '±£ÏÕ', DATE '2007-03-01', NULL, '1');
-INSERT INTO stk_code VALUES ('300750', 'ÄşµÂÊ±´ú', 'SZ', 'µçÁ¦Éè±¸', DATE '2018-06-11', NULL, '1');
+-- äºŒã€æ’å…¥ç¤ºä¾‹æ•°æ®
+-- 1. æ’å…¥è‚¡ç¥¨ä»£ç æ•°æ®
+INSERT INTO stk_code VALUES ('000001', 'å¹³å®‰é“¶è¡Œ', 'SZ', 'é“¶è¡Œ', DATE '1991-04-03', NULL, '1');
+INSERT INTO stk_code VALUES ('000002', 'ä¸‡ç§‘A', 'SZ', 'æˆ¿åœ°äº§', DATE '1991-01-29', NULL, '1');
+INSERT INTO stk_code VALUES ('600519', 'è´µå·èŒ…å°', 'SH', 'é£Ÿå“é¥®æ–™', DATE '2001-08-27', NULL, '1');
+INSERT INTO stk_code VALUES ('601318', 'ä¸­å›½å¹³å®‰', 'SH', 'ä¿é™©', DATE '2007-03-01', NULL, '1');
+INSERT INTO stk_code VALUES ('300750', 'å®å¾·æ—¶ä»£', 'SZ', 'ç”µåŠ›è®¾å¤‡', DATE '2018-06-11', NULL, '1');
 
--- 2. ²åÈëĞĞÇéÊı¾İ£¨Ä£Äâ2024Äê1ÔÂÊı¾İ£©
+-- 2. æ’å…¥è¡Œæƒ…æ•°æ®ï¼ˆæ¨¡æ‹Ÿ2024å¹´1æœˆæ•°æ®ï¼‰
 DECLARE
     v_date DATE := DATE '2024-01-02';
 BEGIN
@@ -107,39 +107,39 @@ BEGIN
         INSERT INTO stk_daily VALUES ('600519', v_date, 1680, 1700, 1720, 1675, 
                                      50000, 85000, 1.19, 35.5, 12.3, 0.8);
         v_date := v_date + 1;
-        -- Ìø¹ıÖÜÄ©
+        -- è·³è¿‡å‘¨æœ«
         IF TO_CHAR(v_date, 'D') IN ('1','7') THEN
             v_date := v_date + 2;
         END IF;
     END LOOP;
     COMMIT;
 END;
-/---ĞÂÖªÊ¶Óï·¨
+/---æ–°çŸ¥è¯†è¯­æ³•
 
--- 3. ²åÈë²ÆÎñÊı¾İ
+-- 3. æ’å…¥è´¢åŠ¡æ•°æ®
 INSERT INTO stk_finance VALUES ('000001', DATE '2023-12-31', 'A', 1798.36, 464.55, 10.3, 28.5, 92.1, 1.98, 19.23, 55800);
 INSERT INTO stk_finance VALUES ('600519', DATE '2023-12-31', 'A', 1476.94, 747.34, 33.5, 91.8, 22.3, 59.49, 177.4, 2830);
 INSERT INTO stk_finance VALUES ('300750', DATE '2023-12-31', 'A', 4009.17, 441.21, 22.8, 21.4, 73.2, 10.05, 44.13, 7610);
 
--- 4. ²åÈë×Ê½ğÁ÷ÏòÊı¾İ
+-- 4. æ’å…¥èµ„é‡‘æµå‘æ•°æ®
 INSERT INTO stk_capital VALUES ('000001', DATE '2024-01-15', 12500.5, -3200.2, 8500.3, 50000, 32000);
 INSERT INTO stk_capital VALUES ('600519', DATE '2024-01-15', 85000.8, -12000.5, 65000.2, 20000, 15000);
 
 
--- Èı¡¢×ÛºÏ²éÑ¯°¸Àı
---°¸Àı1£º¶à±í¹ØÁª²éÑ¯ - ¹ÉÆ±»ù±¾ĞÅÏ¢ÓëĞĞÇé
--- ²éÑ¯2024Äê1ÔÂ15ÈÕËùÓĞ¹ÉÆ±ĞĞÇé
+-- ä¸‰ã€ç»¼åˆæŸ¥è¯¢æ¡ˆä¾‹
+--æ¡ˆä¾‹1ï¼šå¤šè¡¨å…³è”æŸ¥è¯¢ - è‚¡ç¥¨åŸºæœ¬ä¿¡æ¯ä¸è¡Œæƒ…
+-- æŸ¥è¯¢2024å¹´1æœˆ15æ—¥æ‰€æœ‰è‚¡ç¥¨è¡Œæƒ…
 SELECT 
-    c.scode AS ¹ÉÆ±´úÂë,
-    c.sname AS ¹ÉÆ±Ãû³Æ,
-    c.industry AS ĞĞÒµ,
-    d.trade_date AS ½»Ò×ÈÕÆÚ,
-    d.close_price AS ÊÕÅÌ¼Û,
-    d.pct_change AS ÕÇµø·ù,
-    d.volume AS ³É½»Á¿,
-    d.amount AS ³É½»¶î,
-    f.roe AS ¾»×Ê²úÊÕÒæÂÊ,
-    cp.main_inflow AS Ö÷Á¦¾»Á÷Èë
+    c.scode AS è‚¡ç¥¨ä»£ç ,
+    c.sname AS è‚¡ç¥¨åç§°,
+    c.industry AS è¡Œä¸š,
+    d.trade_date AS äº¤æ˜“æ—¥æœŸ,
+    d.close_price AS æ”¶ç›˜ä»·,
+    d.pct_change AS æ¶¨è·Œå¹…,
+    d.volume AS æˆäº¤é‡,
+    d.amount AS æˆäº¤é¢,
+    f.roe AS å‡€èµ„äº§æ”¶ç›Šç‡,
+    cp.main_inflow AS ä¸»åŠ›å‡€æµå…¥
 FROM stk_code c
 JOIN stk_daily d ON c.scode = d.scode 
     AND d.trade_date = DATE '2024-01-15'
@@ -150,8 +150,8 @@ LEFT JOIN stk_capital cp ON c.scode = cp.scode
 WHERE c.status = '1'
 ORDER BY d.amount DESC;
 
---°¸Àı2£º´°¿Úº¯ÊıÓ¦ÓÃ - ¼¼ÊõÖ¸±ê¼ÆËã
--- ¼ÆËãÃ¿Ö»¹ÉÆ±µÄÒÆ¶¯Æ½¾ùÏß¡¢RSIµÈ¼¼ÊõÖ¸±ê
+--æ¡ˆä¾‹2ï¼šçª—å£å‡½æ•°åº”ç”¨ - æŠ€æœ¯æŒ‡æ ‡è®¡ç®—
+-- è®¡ç®—æ¯åªè‚¡ç¥¨çš„ç§»åŠ¨å¹³å‡çº¿ã€RSIç­‰æŠ€æœ¯æŒ‡æ ‡
 WITH price_data AS (
     SELECT 
         scode,
@@ -160,23 +160,23 @@ WITH price_data AS (
         high_price,
         low_price,
         volume,
-        -- 5ÈÕÒÆ¶¯Æ½¾ù
+        -- 5æ—¥ç§»åŠ¨å¹³å‡
         AVG(close_price) OVER (
             PARTITION BY scode 
             ORDER BY trade_date 
             ROWS BETWEEN 4 PRECEDING AND CURRENT ROW
         ) AS ma5,
-        -- 20ÈÕÒÆ¶¯Æ½¾ù
+        -- 20æ—¥ç§»åŠ¨å¹³å‡
         AVG(close_price) OVER (
             PARTITION BY scode 
             ORDER BY trade_date 
             ROWS BETWEEN 19 PRECEDING AND CURRENT ROW
         ) AS ma20,
-        -- ¼ÆËãÕÇµø
+        -- è®¡ç®—æ¶¨è·Œ
         close_price - LAG(close_price, 1) OVER (
             PARTITION BY scode ORDER BY trade_date
         ) AS price_change,
-        -- ¼ÆËãRSI£¨Ïà¶ÔÇ¿ÈõÖ¸Êı£©µÄ×é³É²¿·Ö
+        -- è®¡ç®—RSIï¼ˆç›¸å¯¹å¼ºå¼±æŒ‡æ•°ï¼‰çš„ç»„æˆéƒ¨åˆ†
         CASE 
             WHEN close_price > LAG(close_price, 1) OVER (PARTITION BY scode ORDER BY trade_date)
             THEN close_price - LAG(close_price, 1) OVER (PARTITION BY scode ORDER BY trade_date)
@@ -193,7 +193,7 @@ WITH price_data AS (
 SELECT 
     p.*,
     c.sname,
-    -- ¼ÆËãRSI£¨14ÈÕ£©
+    -- è®¡ç®—RSIï¼ˆ14æ—¥ï¼‰
     100 - 100 / (1 + 
         AVG(gain) OVER (
             PARTITION BY scode 
@@ -207,9 +207,9 @@ SELECT
             ), 0
         )
     ) AS rsi14,
-    -- ¼ÆËãMACDĞÅºÅ
+    -- è®¡ç®—MACDä¿¡å·
     (ma5 - ma20) AS macd_diff,
-    -- ³É½»Á¿5ÈÕÆ½¾ù
+    -- æˆäº¤é‡5æ—¥å¹³å‡
     AVG(volume) OVER (
         PARTITION BY scode 
         ORDER BY trade_date 
@@ -217,13 +217,13 @@ SELECT
     ) AS volume_ma5
 FROM price_data p
 JOIN stk_code c ON p.scode = c.scode
-WHERE c.sname = 'Æ½°²ÒøĞĞ'
+WHERE c.sname = 'å¹³å®‰é“¶è¡Œ'
 ORDER BY p.scode, p.trade_date;
 
--- °¸Àı3£ºµİ¹éCTE - ¼ÆËãÁ¬ĞøÉÏÕÇÌìÊı
--- ÕÒ³öÁ¬ĞøÉÏÕÇ³¬¹ı3ÌìµÄ¹ÉÆ±
+-- æ¡ˆä¾‹3ï¼šé€’å½’CTE - è®¡ç®—è¿ç»­ä¸Šæ¶¨å¤©æ•°
+-- æ‰¾å‡ºè¿ç»­ä¸Šæ¶¨è¶…è¿‡3å¤©çš„è‚¡ç¥¨
 WITH RECURSIVE consecutive_up AS (
-    -- Ãªµã£ºÃ¿Ö»¹ÉÆ±µÄÃ¿¸öÉÏÕÇÆğµã
+    -- é”šç‚¹ï¼šæ¯åªè‚¡ç¥¨çš„æ¯ä¸ªä¸Šæ¶¨èµ·ç‚¹
     SELECT 
         scode,
         trade_date,
@@ -240,7 +240,7 @@ WITH RECURSIVE consecutive_up AS (
     
     UNION ALL
     
-    -- µİ¹é£ºÁ¬ĞøÉÏÕÇ
+    -- é€’å½’ï¼šè¿ç»­ä¸Šæ¶¨
     SELECT 
         d.scode,
         d.trade_date,
@@ -270,13 +270,13 @@ WHERE cu.up_days >= 3
 GROUP BY c.sname, cu.scode, cu.start_date
 ORDER BY consecutive_days DESC;
 
--- °¸Àı4£º×Ó²éÑ¯Ó¦ÓÃ - ÁúÍ·¹ÉÉ¸Ñ¡
--- É¸Ñ¡ĞĞÒµÁúÍ·£¨ÊĞÖµ×î´ó¡¢ROE×î¸ß£©
+-- æ¡ˆä¾‹4ï¼šå­æŸ¥è¯¢åº”ç”¨ - é¾™å¤´è‚¡ç­›é€‰
+-- ç­›é€‰è¡Œä¸šé¾™å¤´ï¼ˆå¸‚å€¼æœ€å¤§ã€ROEæœ€é«˜ï¼‰
 SELECT 
     industry,
-    sname AS ¹ÉÆ±Ãû³Æ,
-    scode AS ¹ÉÆ±´úÂë,
-    market_cap AS ÊĞÖµ,
+    sname AS è‚¡ç¥¨åç§°,
+    scode AS è‚¡ç¥¨ä»£ç ,
+    market_cap AS å¸‚å€¼,
     roe,
     ranking
 FROM (
@@ -284,20 +284,20 @@ FROM (
         c.industry,
         c.sname,
         c.scode,
-        -- ¼ÆËãÊĞÖµ£¨¼ò»¯£ºÊÕÅÌ¼Û*¼ÙÉè×Ü¹É±¾£©
+        -- è®¡ç®—å¸‚å€¼ï¼ˆç®€åŒ–ï¼šæ”¶ç›˜ä»·*å‡è®¾æ€»è‚¡æœ¬ï¼‰
         d.close_price * 10000 AS market_cap,
         f.roe,
-        -- °´ÊĞÖµÅÅÃû
+        -- æŒ‰å¸‚å€¼æ’å
         ROW_NUMBER() OVER (
             PARTITION BY c.industry 
             ORDER BY d.close_price * 10000 DESC
         ) AS market_cap_rank,
-        -- °´ROEÅÅÃû
+        -- æŒ‰ROEæ’å
         ROW_NUMBER() OVER (
             PARTITION BY c.industry 
             ORDER BY f.roe DESC NULLS LAST
         ) AS roe_rank,
-        -- ×ÛºÏÅÅÃû
+        -- ç»¼åˆæ’å
         ROW_NUMBER() OVER (
             PARTITION BY c.industry 
             ORDER BY (d.close_price * 10000) * 0.7 + f.roe * 0.3 DESC
@@ -313,11 +313,11 @@ FROM (
     ) f ON c.scode = f.scode
     WHERE c.status = '1' AND c.industry IS NOT NULL
 ) t
-WHERE ranking = 1  -- ¸÷ĞĞÒµµÚÒ»Ãû
+WHERE ranking = 1  -- å„è¡Œä¸šç¬¬ä¸€å
 ORDER BY market_cap DESC;
 
 
--- °¸Àı5£º¸´ÔÓ·ÖÎö - ×Ê½ğÁ÷ÏòÓë¹É¼Û¹ØÏµ
+-- æ¡ˆä¾‹5ï¼šå¤æ‚åˆ†æ - èµ„é‡‘æµå‘ä¸è‚¡ä»·å…³ç³»
 WITH capital_analysis AS (
     SELECT 
         c.scode,
@@ -328,17 +328,17 @@ WITH capital_analysis AS (
         c.north_inflow,
         d.close_price,
         d.pct_change,
-        -- ¼ÆËã×Ê½ğÁ÷ÏòÅÅÃû
+        -- è®¡ç®—èµ„é‡‘æµå‘æ’å
         RANK() OVER (
             PARTITION BY c.trade_date 
             ORDER BY c.main_inflow DESC
         ) AS inflow_rank,
-        -- ¼ÆËã¼Û¸ñ±ä»¯ÅÅÃû
+        -- è®¡ç®—ä»·æ ¼å˜åŒ–æ’å
         RANK() OVER (
             PARTITION BY c.trade_date 
             ORDER BY ABS(d.pct_change) DESC
         ) AS pct_change_rank,
-        -- ¼ÆËã×Ê½ğÓë¼Û¸ñµÄÏà¹ØĞÔ
+        -- è®¡ç®—èµ„é‡‘ä¸ä»·æ ¼çš„ç›¸å…³æ€§
         AVG(c.main_inflow) OVER (
             PARTITION BY c.scode 
             ORDER BY c.trade_date 
@@ -358,7 +358,7 @@ correlation_analysis AS (
     SELECT 
         scode,
         sname,
-        -- ¼ÆËãÏà¹ØĞÔ
+        -- è®¡ç®—ç›¸å…³æ€§
         ROUND(
             CORR(main_inflow, pct_change) OVER (PARTITION BY scode), 
             4
@@ -367,33 +367,33 @@ correlation_analysis AS (
             CORR(ma5_inflow, ma5_pct_change) OVER (PARTITION BY scode), 
             4
         ) AS ma5_inflow_price_corr,
-        -- Í³¼Æ×Ê½ğ¾»Á÷ÈëÌìÊı
+        -- ç»Ÿè®¡èµ„é‡‘å‡€æµå…¥å¤©æ•°
         COUNT(CASE WHEN main_inflow > 0 THEN 1 END) 
             OVER (PARTITION BY scode) AS inflow_positive_days,
         COUNT(*) OVER (PARTITION BY scode) AS total_days
     FROM capital_analysis
 )
 SELECT DISTINCT
-    scode AS ¹ÉÆ±´úÂë,
-    sname AS ¹ÉÆ±Ãû³Æ,
-    inflow_price_corr AS ×Ê½ğ¼Û¸ñµ±ÈÕÏà¹ØĞÔ,
-    ma5_inflow_price_corr AS ×Ê½ğ¼Û¸ñ5ÈÕÏà¹ØĞÔ,
-    ROUND(inflow_positive_days * 100.0 / total_days, 2) AS ×Ê½ğ¾»Á÷ÈëÌìÊıÕ¼±È,
+    scode AS è‚¡ç¥¨ä»£ç ,
+    sname AS è‚¡ç¥¨åç§°,
+    inflow_price_corr AS èµ„é‡‘ä»·æ ¼å½“æ—¥ç›¸å…³æ€§,
+    ma5_inflow_price_corr AS èµ„é‡‘ä»·æ ¼5æ—¥ç›¸å…³æ€§,
+    ROUND(inflow_positive_days * 100.0 / total_days, 2) AS èµ„é‡‘å‡€æµå…¥å¤©æ•°å æ¯”,
     CASE 
-        WHEN inflow_price_corr > 0.7 THEN 'Ç¿ÕıÏà¹Ø'
-        WHEN inflow_price_corr > 0.3 THEN 'ÕıÏà¹Ø'
-        WHEN inflow_price_corr > -0.3 THEN 'ÈõÏà¹Ø'
-        WHEN inflow_price_corr > -0.7 THEN '¸ºÏà¹Ø'
-        ELSE 'Ç¿¸ºÏà¹Ø'
-    END AS Ïà¹ØĞÔÇ¿¶È
+        WHEN inflow_price_corr > 0.7 THEN 'å¼ºæ­£ç›¸å…³'
+        WHEN inflow_price_corr > 0.3 THEN 'æ­£ç›¸å…³'
+        WHEN inflow_price_corr > -0.3 THEN 'å¼±ç›¸å…³'
+        WHEN inflow_price_corr > -0.7 THEN 'è´Ÿç›¸å…³'
+        ELSE 'å¼ºè´Ÿç›¸å…³'
+    END AS ç›¸å…³æ€§å¼ºåº¦
 FROM correlation_analysis
 WHERE inflow_price_corr IS NOT NULL
 ORDER BY ABS(inflow_price_corr) DESC;
 
 
--- ËÄ¡¢´´½¨Îï»¯ÊÓÍ¼ºÍË÷ÒıÓÅ»¯
--- 1. ´´½¨Îï»¯ÊÓÍ¼¼ÓËÙ¸´ÔÓ²éÑ¯
--- Ã¿ÈÕĞĞÇé»ã×ÜÎï»¯ÊÓÍ¼
+-- å››ã€åˆ›å»ºç‰©åŒ–è§†å›¾å’Œç´¢å¼•ä¼˜åŒ–
+-- 1. åˆ›å»ºç‰©åŒ–è§†å›¾åŠ é€Ÿå¤æ‚æŸ¥è¯¢
+-- æ¯æ—¥è¡Œæƒ…æ±‡æ€»ç‰©åŒ–è§†å›¾
 CREATE MATERIALIZED VIEW mv_daily_summary
 REFRESH COMPLETE ON DEMAND
 AS
@@ -420,13 +420,13 @@ LEFT JOIN stk_finance f ON d.scode = f.scode
 WHERE d.trade_date >= DATE '2024-01-01'
 GROUP BY d.trade_date, c.industry;
 
--- ´´½¨Ë÷Òı¼ÓËÙË¢ĞÂ
+-- åˆ›å»ºç´¢å¼•åŠ é€Ÿåˆ·æ–°
 CREATE INDEX idx_mv_daily_date ON mv_daily_summary(trade_date);
 CREATE INDEX idx_mv_daily_industry ON mv_daily_summary(industry);
 
 
--- 2. ´´½¨º¯Êı·â×°¸´ÔÓÂß¼­
--- ¼ÆËã¹ÉÆ±¼¼ÊõÖ¸±êº¯Êı
+-- 2. åˆ›å»ºå‡½æ•°å°è£…å¤æ‚é€»è¾‘
+-- è®¡ç®—è‚¡ç¥¨æŠ€æœ¯æŒ‡æ ‡å‡½æ•°
 CREATE OR REPLACE FUNCTION get_technical_indicators(
     p_scode IN VARCHAR2,
     p_start_date IN DATE,
@@ -443,11 +443,11 @@ BEGIN
             high_price,
             low_price,
             volume,
-            -- ÒÆ¶¯Æ½¾ù
+            -- ç§»åŠ¨å¹³å‡
             AVG(close_price) OVER (ORDER BY trade_date ROWS 4 PRECEDING) AS ma5,
             AVG(close_price) OVER (ORDER BY trade_date ROWS 19 PRECEDING) AS ma20,
             AVG(close_price) OVER (ORDER BY trade_date ROWS 59 PRECEDING) AS ma60,
-            -- ²¼ÁÖ´ø
+            -- å¸ƒæ—å¸¦
             AVG(close_price) OVER (ORDER BY trade_date ROWS 19 PRECEDING) 
                 + 2 * STDDEV(close_price) OVER (ORDER BY trade_date ROWS 19 PRECEDING) AS boll_upper,
             AVG(close_price) OVER (ORDER BY trade_date ROWS 19 PRECEDING) 
@@ -463,7 +463,7 @@ BEGIN
 END;
 /
 
--- Ê¹ÓÃº¯Êı
+-- ä½¿ç”¨å‡½æ•°
 DECLARE
     v_cur SYS_REFCURSOR;
     v_row tech_data%ROWTYPE;
@@ -472,24 +472,24 @@ BEGIN
     LOOP
         FETCH v_cur INTO v_row;
         EXIT WHEN v_cur%NOTFOUND;
-        -- ´¦ÀíÊı¾İ
+        -- å¤„ç†æ•°æ®
         DBMS_OUTPUT.PUT_LINE(v_row.trade_date || ': ' || v_row.close_price);
     END LOOP;
     CLOSE v_cur;
 END;
 /
 
--- Îå¡¢ĞÔÄÜÓÅ»¯½¨Òé
--- 1. Ö´ĞĞ¼Æ»®·ÖÎö
--- ²é¿´Ö´ĞĞ¼Æ»®
+-- äº”ã€æ€§èƒ½ä¼˜åŒ–å»ºè®®
+-- 1. æ‰§è¡Œè®¡åˆ’åˆ†æ
+-- æŸ¥çœ‹æ‰§è¡Œè®¡åˆ’
 EXPLAIN PLAN FOR
 SELECT * FROM (
-    -- ¸´ÔÓ²éÑ¯
+    -- å¤æ‚æŸ¥è¯¢
 );
 
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
--- ÊÕ¼¯Í³¼ÆĞÅÏ¢
+-- æ”¶é›†ç»Ÿè®¡ä¿¡æ¯
 BEGIN
     DBMS_STATS.GATHER_TABLE_STATS(
         ownname => 'STOCK_USER',
@@ -499,19 +499,19 @@ BEGIN
     );
 END;
 /
--- ·ÖÇøÎ¬»¤
--- Ìí¼ÓĞÂ·ÖÇø
+-- åˆ†åŒºç»´æŠ¤
+-- æ·»åŠ æ–°åˆ†åŒº
 ALTER TABLE stk_daily ADD PARTITION p_2025 
 VALUES LESS THAN (DATE '2026-01-01');
 
--- ºÏ²¢¾É·ÖÇø
+-- åˆå¹¶æ—§åˆ†åŒº
 ALTER TABLE stk_daily MERGE PARTITIONS p_2020, p_2021 
 INTO PARTITION p_2020_2021;
 
 
--- Áù¡¢ÍêÕû²éÑ¯Á·Ï°
--- Á·Ï°1£ºÑ¡¹É²ßÂÔ
--- Ñ°ÕÒ"»Æ½ğ½»²æ"¹ÉÆ±£¨5ÈÕ¾ùÏßÉÏ´©20ÈÕ¾ùÏß£©
+-- å…­ã€å®Œæ•´æŸ¥è¯¢ç»ƒä¹ 
+-- ç»ƒä¹ 1ï¼šé€‰è‚¡ç­–ç•¥
+-- å¯»æ‰¾"é»„é‡‘äº¤å‰"è‚¡ç¥¨ï¼ˆ5æ—¥å‡çº¿ä¸Šç©¿20æ—¥å‡çº¿ï¼‰
 WITH moving_averages AS (
     SELECT 
         scode,
@@ -554,7 +554,7 @@ JOIN stk_code c ON m.scode = c.scode
 LEFT JOIN stk_finance f ON m.scode = f.scode 
     AND f.report_date = (SELECT MAX(report_date) FROM stk_finance WHERE scode = m.scode)
 LEFT JOIN stk_capital d ON m.scode = d.scode AND m.trade_date = d.trade_date
-WHERE m.ma5_yesterday <= m.ma20_yesterday  -- ×òÈÕ5ÈÕÏßÔÚ20ÈÕÏßÏÂ
-    AND m.ma5 > m.ma20  -- ½ñÈÕ5ÈÕÏßÉÏ´©20ÈÕÏß
+WHERE m.ma5_yesterday <= m.ma20_yesterday  -- æ˜¨æ—¥5æ—¥çº¿åœ¨20æ—¥çº¿ä¸‹
+    AND m.ma5 > m.ma20  -- ä»Šæ—¥5æ—¥çº¿ä¸Šç©¿20æ—¥çº¿
     AND c.status = '1'
 ORDER BY m.trade_date DESC, m.ma5 - m.ma20 DESC;
